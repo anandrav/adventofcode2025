@@ -2,16 +2,17 @@ use os
 use strings
 
 fn is_invalid(n: int) {
-  let n_string = n.str()
-  for stride in range(1, n_string.len()) {
-    if n_string.len() mod stride != 0 {
+  let n = n.str()
+  let len = n.len()
+  for stride in range(1, len) {
+    if len % stride != 0 {
       continue
     }
-    let count = n_string.len() / stride
-    let first_seg = n_string.slice(0, stride)
+    let count = len / stride
+    let first_seg = n.slice(0, stride)
     var all_equal = true
     for i in range(1, count) {
-      let other_seg = n_string.slice(i*stride, (i+1)*stride)
+      let other_seg = n.slice(i*stride, (i+1)*stride)
       if other_seg != first_seg {
         all_equal = false
       }
@@ -50,7 +51,7 @@ for c in chars {
         answer = answer + n
       }
     } 
-  } else {}
+  }
 }
 
 println(answer)

@@ -29,7 +29,7 @@ for line in content.lines() {
   let n = num_string.to_int()!
   let delta = dir * n
   answer = answer + num_crosses(pos, delta)
-  pos = (pos + delta) mod 100
+  pos = (pos + delta) % 100
 }
 
 println(answer)
