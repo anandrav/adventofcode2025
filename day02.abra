@@ -1,0 +1,56 @@
+use os
+use strings
+
+fn is_invalid(n: int) {
+  let n_string = n.str()
+  for stride in range(1, n_string.len()) {
+    if n_string.len() mod stride != 0 {
+      continue
+    }
+    let count = n_string.len() / stride
+    let first_seg = n_string.slice(0, stride)
+    var all_equal = true
+    for i in range(1, count) {
+      let other_seg = n_string.slice(i*stride, (i+1)*stride)
+      if other_seg != first_seg {
+        all_equal = false
+      }
+    }
+    if all_equal {
+      return true
+    }
+  }
+  return false
+}
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+let chars = content.chars()
+chars.push(",")
+
+let num_str = ""
+let num1 = 0
+let num2 = 0
+
+var i = 0
+for c in chars {
+  if c.is_numeric() {
+    num_str = num_str .. c
+  } else if c == "-" {
+    num1 = num_str.to_int()!
+    num_str = "" 
+  } else if c == "," {
+    num2 = num_str.to_int()!
+    num_str = ""
+    for n in range(num1, num2 + 1) {
+      if is_invalid(n) {
+        answer = answer + n
+      }
+    } 
+  } else {}
+}
+
+println(answer)
