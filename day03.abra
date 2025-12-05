@@ -8,44 +8,44 @@ let fname = args[0]
 let content = fread(fname)!
 
 for line in content.lines() {
-  answer = answer + max_voltage(line)
+    answer = answer + max_voltage(line)
 }
 
 fn max_voltage(line) {
-  let nbatteries = 12
-  let chars = line.chars()
-  let len = chars.len()
-  let digits = []
-  for i in range(len-nbatteries, len) {
-    digits.push(i)
-  }
-  var limit = -1
-  for i in nbatteries {
-    digits[i] = max_voltage_helper(chars, digits[i], limit)
-    limit = digits[i]
-  }
+    let nbatteries = 12
+    let chars = line.chars()
+    let len = chars.len()
+    let digits = []
+    for i in range(len-nbatteries, len) {
+        digits.push(i)
+    }
+    var limit = -1
+    for i in nbatteries {
+        digits[i] = max_voltage_helper(chars, digits[i], limit)
+        limit = digits[i]
+    }
 
-  let result = 0
-  for digit in digits {
-    result = result * 10
-    result = result + chars[digit].to_int()!
-  }
-  result
+    let result = 0
+    for digit in digits {
+        result = result * 10
+        result = result + chars[digit].to_int()!
+    }
+    result
 }
 
 fn max_voltage_helper(chars, begin, limit) {
-  var max = chars[begin].to_int()!
-  var max_index = begin
-  var i = begin
-  while i > limit {
-    let val = chars[i].to_int()!
-    if val >= max {
-      max = val
-      max_index = i
+    var max = chars[begin].to_int()!
+    var max_index = begin
+    var i = begin
+    while i > limit {
+        let val = chars[i].to_int()!
+        if val >= max {
+            max = val
+            max_index = i
+        }
+        i = i - 1
     }
-    i = i - 1
-  }
-  max_index
+    max_index
 }
 
 println(answer)

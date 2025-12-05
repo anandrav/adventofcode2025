@@ -3,17 +3,17 @@ use strings
 use math
 
 fn num_crosses(pos: int, delta: int) -> int {
-  if delta >= 0 {
-      delta = delta + pos
-      delta / 100
-  } else { // delta is negative
-      if (pos == 0) or (delta + pos > 0) {
-          delta.abs() / 100
-      } else {
-          delta = delta + pos
-          (delta.abs() / 100) + 1
-      }
-  }
+    if delta >= 0 {
+        delta = delta + pos
+        delta / 100
+    } else { // delta is negative
+        if (pos == 0) or (delta + pos > 0) {
+            delta.abs() / 100
+        } else {
+            delta = delta + pos
+            (delta.abs() / 100) + 1
+        }
+    }
 }
 
 var pos = 50
@@ -23,13 +23,13 @@ let args = get_args()
 let fname = args[0]
 let content = fread(fname)!
 for line in content.lines() {
-  let chars = line.chars()
-  let dir = if chars[0] == "L" { -1 } else { 1 }
-  let num_string = line.slice(1, line.len())
-  let n = num_string.to_int()!
-  let delta = dir * n
-  answer = answer + num_crosses(pos, delta)
-  pos = (pos + delta) % 100
+    let chars = line.chars()
+    let dir = if chars[0] == "L" { -1 } else { 1 }
+    let num_string = line.slice(1, line.len())
+    let n = num_string.to_int()!
+    let delta = dir * n
+    answer = answer + num_crosses(pos, delta)
+    pos = (pos + delta) % 100
 }
 
 println(answer)
