@@ -1,0 +1,59 @@
+use os
+use strings
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+
+let grid = []
+
+for line in content.lines() {
+    grid.push(line.chars())
+}
+
+var total_removed = 0
+while true {
+    let new_grid = grid.clone()
+    let removed = remove_rolls(grid, new_grid)
+    if removed == 0 {
+        break
+    }
+    grid = new_grid
+    total_removed = total_removed + removed
+}
+
+fn remove_rolls(grid, new_grid) -> int {
+    var removed = 0
+    for i in grid.len() {
+        for j in grid[0].len() {
+            if can_access_roll(grid, i, j) {
+                new_grid[i][j] = "x"
+                removed += 1
+            }
+        }
+    }
+    removed
+}
+
+fn can_access_roll(grid, i, j) -> bool {
+    if grid[i][j] != "@" {
+        return false
+    }
+    var count = 0
+
+    for a in range_inclusive(i-1,i+1) {
+        for b in range_inclusive(j-1,j+1) {
+            if (a == i) and (b == j) continue
+            if not grid.bounds().contains(a) continue
+            if not grid[0].bounds().contains(b) continue
+            if grid[a][b] == "@" {
+                count += 1
+            }
+        }
+    }
+    count < 4
+}
+
+println(total_removed)
