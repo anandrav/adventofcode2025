@@ -1,0 +1,100 @@
+use os
+use strings
+use math
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+
+let ranges = []
+
+let lines = content.lines()
+var i = 0
+while i < lines.len() {
+    let line = lines[i]
+    let range = parse_range(line)
+    ranges.push(range)
+    i += 1
+    if lines[i] == "" {
+        break
+    }
+}
+
+// println("ranges: " .. ranges)
+ranges.sort()
+// println("ranges sorted: " .. ranges)
+let ranges = merge_ranges(ranges)
+// println("ranges merged: " .. ranges)
+
+i += 1
+while i < lines.len() {
+    let num = lines[i].to_int()!
+    if in_range(num, ranges) {
+        // println(num .. " is in range.")
+        answer += 1
+    }
+    i += 1
+}
+
+fn parse_range(line: string) -> (int, int) {
+    let chars = line.chars()
+
+    var i = 0
+    while chars[i] != "-" {
+        i += 1
+    }
+    let begin = line.slice(0, i).to_int()!
+    let end = line.slice(i+1, line.len()).to_int()!
+    (begin, end)
+}
+
+fn merge_ranges(ranges: array<(int, int)>) -> array<(int, int)> {
+    let ret = []
+    if ranges.is_empty() {
+        return ret
+    }
+
+    var begin = 0
+    var next = 1
+
+    while begin < ranges.len() {
+        var (smallest, highest) = ranges[begin]
+        while next < ranges.len() {
+            let (a, b) = ranges[next]
+            if a - highest <= 1 {
+                highest = max(highest, b)
+                next += 1
+            } else {
+                break
+            }
+        }
+        ret.push((smallest, highest))
+        begin = next
+        next = begin + 1
+    }
+
+    ret
+}
+
+fn in_range(num: int, ranges: array<(int, int)>) -> bool {
+    var begin = 0
+    var end = ranges.len()
+    var ret = false
+    while begin < end {
+        let mid = (end - begin) / 2 + begin
+        let (a, b) = ranges[mid]
+        if a > num {
+            end = mid
+        } else if b < num {
+            begin = mid + 1
+        } else {
+            return true
+        }
+    }
+    ret
+    false
+}
+
+println(answer)
