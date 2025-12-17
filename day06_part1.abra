@@ -1,0 +1,75 @@
+use os
+use strings
+use math
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+
+let nums: array<array<int>> = []
+
+let lines = content.lines()
+for i in lines.len() - 1 {
+    let line = lines[i]
+    nums.push(parse_row_nums(line))
+    i += 1
+}
+let operators = parse_row_operators(lines[lines.len()-1])
+
+let ncols = nums[0].len()
+let noperands = nums.len()
+
+for col in ncols {
+    let acc = if operators[col] == "*" { 1 } else { 0 }
+    var row = 0
+    while row < noperands {
+        let num = nums[row][col]
+        if operators[col] == "*" {
+            acc = acc * num
+        } else {
+            acc = acc + num
+        }
+        row += 1
+    }
+    answer += acc
+}
+
+fn parse_row_nums(line: string) -> array<int> {
+    let ret = []
+    let chars = line.chars()
+
+    let num_str = ""
+
+    for c in chars {
+        if c.is_numeric() {
+            num_str = num_str .. c
+        } else if num_str != "" {
+            let num = num_str.to_int()!
+            ret.push(num)
+            num_str = ""
+        }
+    }
+    if num_str != "" {
+        let num = num_str.to_int()!
+        ret.push(num)
+    }
+
+    ret
+}
+
+fn parse_row_operators(line: string) -> array<string> {
+    let ret = []
+    let chars = line.chars()
+
+    for c in chars {
+        if (c == "+") or (c == "*") {
+            ret.push(c)
+        }
+    }
+
+    ret
+}
+
+println(answer)
