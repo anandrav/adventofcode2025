@@ -1,0 +1,114 @@
+use os
+use strings
+use math
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+
+type cell = {
+    num: string
+    offset: int
+}
+
+extend cell {
+    fn digit_at_offset(self, o: int) -> option<int> {
+        let index = o - self.offset
+        if (index < 0) or (index >= self.num.len()) {
+            return .none
+        }
+        let chars = self.num.chars()
+        let digit = chars[index].to_int()!
+        .some(digit)
+    }
+}
+
+let grid: array<array<cell>> = []
+
+let lines = content.lines()
+for i in lines.len() - 1 {
+    let line = lines[i]
+    grid.push(parse_row_grid(line))
+    i += 1
+}
+let operators = parse_row_operators(lines[lines.len()-1])
+
+let ncols = grid[0].len()
+let noperands = grid.len()
+
+for col in ncols {
+    let acc = if operators[col] == "*" { 1 } else { 0 }
+
+    var min_offset = int_max()
+    var max_len = 0
+    for row in noperands {
+        let cell = grid[row][col]
+        min_offset = min(min_offset, cell.offset)
+        max_len = max(max_len, cell.num.len())
+    }
+
+    for o in range(min_offset, min_offset + max_len) {
+        let operand = 0 // build an operand by slicing digits
+        for row in noperands {
+            let cell = grid[row][col]
+            let digit = cell.digit_at_offset(o)
+            match digit {
+                .some(digit) -> {
+                    operand = operand * 10
+                    operand = operand + digit
+                }
+                .none -> {}
+            }
+        }
+        if operators[col] == "*" {
+            acc = acc * operand
+        } else {
+            acc = acc + operand
+        }
+    }
+    
+    answer += acc
+}
+
+fn parse_row_grid(line: string) -> array<cell> {
+    let ret = []
+    let chars = line.chars()
+
+    let num_str = ""
+    var offset = 0
+
+    for i in chars.len() {
+        let c = chars[i]
+        if c.is_numeric() {
+            if num_str == "" {
+                offset = i
+            }
+            num_str = num_str .. c
+        } else if num_str != "" {
+            ret.push(cell(num_str, offset))
+            num_str = ""
+        }
+    }
+    if num_str != "" {
+        ret.push(cell(num_str, offset))
+    }
+
+    ret
+}
+
+fn parse_row_operators(line: string) -> array<string> {
+    let ret = []
+    let chars = line.chars()
+
+    for c in chars {
+        if (c == "+") or (c == "*") {
+            ret.push(c)
+        }
+    }
+
+    ret
+}
+
+println(answer)
