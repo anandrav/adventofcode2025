@@ -1,0 +1,109 @@
+use os
+use strings
+use math
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+
+let grid = []
+
+for line in content.lines() {
+    let chars = line.chars()
+    grid.push(chars)
+}
+
+for row in grid.len() {
+    for col in grid[0].len() {
+        if grid[row][col] == "." {
+            grid[row][col] = "0"
+        }
+    }
+}
+
+var beam_origins = []
+
+for i in grid[0].len() {
+    let c = grid[0][i]
+    if c == "S" {
+        beam_origins.push((0, i))
+        grid[0][i] = "1"
+    }
+}
+
+var timelines = 0
+
+while not beam_origins.is_empty() {
+    let new_beam_origins = []
+    for origin in beam_origins {
+        var (row, col) = origin
+        if row >= grid.len() continue
+        if col < 0 continue
+        if col >= grid[0].len() continue
+
+        let power = grid[row][col].to_int()!
+
+        row = row + 1
+        if row >= grid.len() {
+            timelines += power
+            continue
+        }
+
+        let c = grid[row][col]
+        if c == "^" {
+            // TODO code duplication
+            if grid[row][col+1].is_numeric() {
+                let num = grid[row][col+1].to_int()!
+                let new_power = num + power
+                grid[row][col+1] = new_power.str()
+
+                if num == 0 {
+                    new_beam_origins.push((row, col+1))
+                }
+            }
+            // TODO code duplication
+            if grid[row][col-1].is_numeric() {
+                let num = grid[row][col-1].to_int()!
+                let new_power = num + power
+                grid[row][col-1] = new_power.str()
+
+                if num == 0 {
+                    new_beam_origins.push((row, col-1))
+                }
+            }
+        } else {
+            // TODO code duplication
+            if grid[row][col].is_numeric() {
+                let num = grid[row][col].to_int()!
+                let new_power = num + power
+                grid[row][col] = new_power.str()
+
+                if num == 0 {
+                    new_beam_origins.push((row, col))
+                }
+            }
+        }
+    }
+    beam_origins = new_beam_origins
+}
+
+for row in grid.len() {
+    for col in grid[0].len() {
+        let c = grid[row][col]
+        if c.is_numeric() {
+            let n = c.to_int()!
+            if n == 0 {
+                print(".")
+            } else {
+                print("|")
+            }
+        } else {
+            print(c)
+        }
+    }
+    println("")
+}
+
+println(timelines)
