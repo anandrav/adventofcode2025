@@ -53,7 +53,7 @@ while not beam_origins.is_empty() {
 
         let c = grid[row][col]
         if c == "^" {
-            // TODO code duplication
+            // TODO code duplication, use a lambda
             if grid[row][col+1].is_numeric() {
                 let num = grid[row][col+1].to_int()!
                 let new_power = num + power
@@ -63,7 +63,7 @@ while not beam_origins.is_empty() {
                     new_beam_origins.push((row, col+1))
                 }
             }
-            // TODO code duplication
+            // TODO code duplication, use a lambda
             if grid[row][col-1].is_numeric() {
                 let num = grid[row][col-1].to_int()!
                 let new_power = num + power
@@ -74,7 +74,7 @@ while not beam_origins.is_empty() {
                 }
             }
         } else {
-            // TODO code duplication
+            // TODO code duplication, use a lambda
             if grid[row][col].is_numeric() {
                 let num = grid[row][col].to_int()!
                 let new_power = num + power
