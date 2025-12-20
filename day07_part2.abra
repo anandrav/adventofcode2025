@@ -53,40 +53,25 @@ while not beam_origins.is_empty() {
 
         let c = grid[row][col]
         if c == "^" {
-            // TODO code duplication, use a lambda
-            if grid[row][col+1].is_numeric() {
-                let num = grid[row][col+1].to_int()!
-                let new_power = num + power
-                grid[row][col+1] = new_power.str()
-
-                if num == 0 {
-                    new_beam_origins.push((row, col+1))
-                }
-            }
-            // TODO code duplication, use a lambda
-            if grid[row][col-1].is_numeric() {
-                let num = grid[row][col-1].to_int()!
-                let new_power = num + power
-                grid[row][col-1] = new_power.str()
-
-                if num == 0 {
-                    new_beam_origins.push((row, col-1))
-                }
-            }
+            travel_beam(grid, new_beam_origins, power, row, col+1)
+            travel_beam(grid, new_beam_origins, power, row, col-1)
         } else {
-            // TODO code duplication, use a lambda
-            if grid[row][col].is_numeric() {
-                let num = grid[row][col].to_int()!
-                let new_power = num + power
-                grid[row][col] = new_power.str()
-
-                if num == 0 {
-                    new_beam_origins.push((row, col))
-                }
-            }
+            travel_beam(grid, new_beam_origins, power, row, col)
         }
     }
     beam_origins = new_beam_origins
+}
+
+fn travel_beam(grid, new_beam_origins, power, row, col) {
+    if grid[row][col].is_numeric() {
+        let num = grid[row][col].to_int()!
+        let new_power = num + power
+        grid[row][col] = new_power.str()
+
+        if num == 0 {
+            new_beam_origins.push((row, col))
+        }
+    } 
 }
 
 for row in grid.len() {
