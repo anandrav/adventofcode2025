@@ -38,23 +38,22 @@ while not beam_origins.is_empty() {
         if row >= grid.len() continue
 
         let c = grid[row][col]
+        let travel_beam = (row, col) -> {
+            if grid[row][col] == "." {
+                grid[row][col] = "|"
+
+                new_beam_origins.push((row, col))
+            }
+        }
         if c == "^" {
             splits += 1
-            travel_beam(grid, new_beam_origins, row, col+1)
-            travel_beam(grid, new_beam_origins, row, col-1)
+            travel_beam(row, col+1)
+            travel_beam(row, col-1)
         } else {
-            travel_beam(grid, new_beam_origins, row, col)
+            travel_beam(row, col)
         }
     }
     beam_origins = new_beam_origins
-}
-
-fn travel_beam(grid, new_beam_origins, row, col) {
-    if grid[row][col] == "." {
-        grid[row][col] = "|"
-
-        new_beam_origins.push((row, col))
-    }
 }
 
 for row in grid.len() {
