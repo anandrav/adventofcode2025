@@ -1,6 +1,6 @@
 use os
-use strings
-use math
+use core/strings
+use core/math
 
 var answer = 0
 

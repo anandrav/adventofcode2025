@@ -1,6 +1,6 @@
 use os
-use strings
-use math
+use core/strings
+use core/math
 
 fn num_crosses(pos: int, delta: int) -> int {
     if delta >= 0 {

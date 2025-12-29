@@ -1,5 +1,5 @@
 use os
-use strings
+use core/strings
 
 var answer = 0
 

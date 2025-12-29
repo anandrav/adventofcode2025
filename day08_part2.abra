@@ -1,6 +1,6 @@
 use os
-use strings
-use math
+use core/strings
+use core/math
 
 let args = get_args()
 let fname = args[0]

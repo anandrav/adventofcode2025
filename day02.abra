@@ -1,5 +1,5 @@
 use os
-use strings
+use core/strings
 
 fn is_invalid(n: int) {
   let n = n.str()
