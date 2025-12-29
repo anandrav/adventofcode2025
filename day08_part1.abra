@@ -1,0 +1,159 @@
+use os
+use strings
+use math
+
+var answer = 0
+
+let args = get_args()
+let fname = args[0]
+let content = fread(fname)!
+
+fn parse_int(chars: array<string>, index) -> (float, int) {
+    var num_str = ""
+    while index < chars.len() and chars[index].is_numeric() {
+        num_str = num_str .. chars[index]
+        index += 1
+    }
+    (num_str.to_float()!, index)
+}
+
+type Point = {
+    x: float
+    y: float
+    z: float
+}
+
+implement ToString for Point {
+    fn str(self) -> string {
+        "Point(" .. "x=" .. self.x .. " y=" .. self.y .. " z=" .. self.z .. ")"
+    }
+}
+
+let points = []
+
+for line in content.lines() {
+    let chars = line.chars()
+    let index = 0
+    let (x, index) = parse_int(chars, index)
+    index += 1
+    let (y, index) = parse_int(chars, index)
+    index += 1
+    let (z, index) = parse_int(chars, index)
+    points.push(Point(x, y, z))
+}
+
+let edges = []
+
+for p1 in points.len() {
+    for p2 in range(p1+1, points.len()) {
+        let dist = distance(points, p1, p2)
+        edges.push((dist, p1, p2))
+    }
+}
+
+fn distance(points: array<Point>, p1: int, p2: int) -> float {
+    let p1 = points[p1]
+    let p2 = points[p2]
+    sqrt_float((p1.x - p2.x)^2.0 + (p1.y - p2.y)^2.0 + (p1.z - p2.z)^2.0)
+}
+
+edges.sort_by((a, b) -> {
+    let (a, _, _) = a
+    let (b, _, _) = b
+    a <= b
+})
+
+type DisjointSets = {
+    parent: array<int>
+    sizes: array<int>
+}
+
+extend DisjointSets {
+    fn find(self, i: int) -> int {
+        let parent = self.parent[i]
+        if parent == i {
+            return i
+        }
+        let ret = self.find(parent)
+        self.parent[i] = ret
+        ret
+    }
+
+    fn union(self, i1: int, i2: int) -> bool {
+        let root1 = self.find(i1)
+        let root2 = self.find(i2)
+
+        if root1 != root2 {
+            let size1 = self.sizes[root1]
+            let size2 = self.sizes[root2]
+            let new_rank = size1 + size2
+
+            if size1 < size2 {
+                self.parent[root1] = root2
+                self.sizes[root2] = new_rank
+            } else {
+                self.parent[root2] = root1
+                self.sizes[root1] = new_rank
+            }
+
+            return true
+        }
+        false
+    }
+
+    fn size_of(self, i) -> int {
+        let root = self.find(i)
+        self.sizes[root]
+    }
+}
+
+fn init_disjoint_sets(size: int) -> DisjointSets {
+    let parent = []
+    let rank = []
+    for i in size {
+        parent.push(i)
+        rank.push(1)
+    }
+    DisjointSets(parent, rank)
+}
+
+let disjoint_sets = init_disjoint_sets(points.len())
+
+for i in 1000 {
+    let (distance, p1, p2) = edges[i]
+    if disjoint_sets.union(p1, p2) {
+        let point1 = points[p1]
+        let point2 = points[p2]
+    }
+}
+
+for i in points.len() {
+    let p = points[i]
+    let size = disjoint_sets.size_of(i)
+    let parent = disjoint_sets.find(i)
+}
+
+let visited = []
+for i in points.len() {
+    visited.push(false)
+}
+
+let sizes = []
+for p in points.len() {
+    let repr = disjoint_sets.find(p)
+    let size = disjoint_sets.sizes[repr]
+    if visited[repr] {
+        continue
+    }
+    visited[repr] = true
+    sizes.push(size)
+}
+
+sizes.sort()
+
+let answer = 1
+for i in 3 {
+    answer = answer * sizes[sizes.len()-1-i]
+}
+
+println(answer)
