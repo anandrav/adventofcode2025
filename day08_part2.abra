@@ -2,11 +2,11 @@ use os
 use strings
 use math
 
-var answer = 0
-
 let args = get_args()
 let fname = args[0]
 let content = fread(fname)!
+
+var answer = 0
 
 fn parse_int(chars: array<string>, index) -> (float, int) {
     var num_str = ""
@@ -119,35 +119,13 @@ fn init_disjoint_sets(size: int) -> DisjointSets {
 
 let disjoint_sets = init_disjoint_sets(points.len())
 
-for i in 1000 {
-    let (distance, p1, p2) = edges[i]
+for edge in edges {
+    let (distance, p1, p2) = edge
     if disjoint_sets.union(p1, p2) {
         let point1 = points[p1]
         let point2 = points[p2]
+        answer = float_to_int(point1.x * point2.x)
     }
-}
-
-let visited = []
-for i in points.len() {
-    visited.push(false)
-}
-
-let sizes = []
-for p in points.len() {
-    let repr = disjoint_sets.find(p)
-    let size = disjoint_sets.sizes[repr]
-    if visited[repr] {
-        continue
-    }
-    visited[repr] = true
-    sizes.push(size)
-}
-
-sizes.sort()
-
-let answer = 1
-for i in 3 {
-    answer = answer * sizes[sizes.len()-1-i]
 }
 
 println(answer)
