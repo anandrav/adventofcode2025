@@ -1,4 +1,4 @@
-use os
+use core/fs
 use core/strings
 
 fn is_invalid(n: int) {

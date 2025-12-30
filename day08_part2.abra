@@ -1,4 +1,4 @@
-use os
+use core/fs
 use core/strings
 use core/math
 
@@ -57,10 +57,9 @@ fn distance(points: array<Point>, p1: int, p2: int) -> float {
     sqrt_float((p1.x - p2.x)^2.0 + (p1.y - p2.y)^2.0 + (p1.z - p2.z)^2.0)
 }
 
-edges.sort_by((a, b) -> {
-    let (a, _, _) = a
-    let (b, _, _) = b
-    a <= b
+edges.sort_by_key((a) -> {
+    let (key, _, _) = a
+    key
 })
 
 type DisjointSets = {
